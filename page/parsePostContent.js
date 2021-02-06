@@ -50,7 +50,7 @@ module.exports = html => {
 
         post.contents += '```' + (language || '') + '\n'
         post.contents += context
-        post.contents += '```'
+        post.contents += '\n```'
 
         break
       }
