@@ -2,10 +2,11 @@ const fs = require('fs')
 
 const getPostListOfAuthor = require('./fns/getPostListOfAuthor')
 const getPostContent = require('./fns/getPostContent')
+const convertFormat = require('./utils/convertFormat')
 
 const init = async () => {
-  const pages = await getPostListOfAuthor('seia')
-  const result = []
+  const author = 'gokoro'
+  const pages = await getPostListOfAuthor(author)
 
   for (let i = 0, l = pages.length; i < l; i++) {
     const page = pages[i]
@@ -17,11 +18,19 @@ const init = async () => {
 
       post.data = await getPostContent(post.link)
 
-      result.push(post)
+      const slug = post.link
+        .split('?')[0]
+        .split('/')
+        .slice(-2)[0] // NOTE: Take care about trailing slash!
+      const loc = `./${author}/${slug}`
+
+      if (!fs.existsSync(loc)) {
+        fs.mkdirSync(loc, { recursive: true })
+      }
+
+      fs.writeFileSync(`${loc}/index.mdx`, convertFormat(author, post.data))
     }
   }
-
-  fs.writeFileSync('./result.json', JSON.stringify(result), 'utf8')
 }
 
 init()

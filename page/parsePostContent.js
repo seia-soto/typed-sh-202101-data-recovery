@@ -1,3 +1,4 @@
+const { EOL } = require('os')
 const cheerio = require('cheerio')
 
 module.exports = html => {
@@ -48,9 +49,9 @@ module.exports = html => {
         const classNames = child.attr('class') || ''
         const [language] = classNames.split(' ').filter(className => className.includes('language-'))
 
-        post.contents += '```' + (language || '') + '\n'
+        post.contents += '```' + (language || '') + EOL
         post.contents += context
-        post.contents += '\n```'
+        post.contents += EOL + '```'
 
         break
       }
@@ -58,7 +59,7 @@ module.exports = html => {
         child.find('li').each((i, list) => {
           const node = $(list)
 
-          post.contents += '- ' + node.text() + '\n'
+          post.contents += '- ' + node.text() + EOL
         })
 
         break
@@ -68,7 +69,7 @@ module.exports = html => {
       }
     }
 
-    post.contents += '\n\n'
+    post.contents += EOL + EOL
   })
 
   return post
